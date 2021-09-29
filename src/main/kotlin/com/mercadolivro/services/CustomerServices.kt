@@ -3,47 +3,38 @@ package com.mercadolivro.services
 import com.mercadolivro.controllers.requests.PostCustomerRequest
 import com.mercadolivro.controllers.requests.PutCustomerRequest
 import com.mercadolivro.model.CustomerModel
+import com.mercadolivro.repository.CustomerRepository
 import org.springframework.stereotype.Service
 
 
 @Service
-class CustomerServices {
+class CustomerServices(val customerRepository: CustomerRepository) {
     val customers = mutableListOf<CustomerModel>()
 
     fun getAllCustomers(name: String?): List<CustomerModel> {
         name?.let {
-            return  customers.filter { it.name.contains(name, ignoreCase = true) }
-
+            return  customerRepository.findByNameContaining(it)
             //ignorecase true vai ignorar letras maiusculas ou minusculas na aplicação
         }
-        return customers
+        return customerRepository.findAll().toList() // pq é uma mutableList
     }
 
     fun postCustomer(customer: CustomerModel){
-
-        val id = if(customers.isEmpty()){
-            1
-        } else {
-            customers.last().id!!.toInt() + 1
-        }.toString()
-        customers.add(customer)
+      customerRepository.save(customer) // customer chamando DB
     }
 
-    fun getCustomerById(id: String): CustomerModel {
-        return customers.filter{ it.id == id }.first()
-        // se o it.id ( id do elemento/registro for igual ao id do PathVariable então pega ele
+    fun getCustomerById(id: Int): CustomerModel {
+        return customerRepository.findById(id).orElseThrow()
     }
 
     fun putCustomerById( customer: CustomerModel) {
-        customers.filter{ it.id == customer.id }.first().let {
-            it.name = customer.name
-            it.email = customer.email
-
-
-        }
+      if (!customerRepository.existsById(customer.id!!)) {
+          throw Exception()
+      }
+        customerRepository.save(customer)
     }
 
-    fun deleteCustomerById(id: String) {
+    fun deleteCustomerById(id: Int) {
         customers.removeIf { it.id == id }
     }
 

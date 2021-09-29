@@ -33,18 +33,18 @@ class CustomerController ( val customerServices: CustomerServices) {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun getCustomerById(@PathVariable id: String): CustomerModel {
+    fun getCustomerById(@PathVariable id: Int): CustomerModel {
       return customerServices.getCustomerById(id)
     }
 
     @PutMapping("/{id}")
-    fun putCustomerById(@PathVariable id: String, @RequestBody customer: PutCustomerRequest):String {
+    fun putCustomerById(@PathVariable id: Int, @RequestBody customer: PutCustomerRequest):String {
        customerServices.putCustomerById(customer.toCustomerModel(id))
         return "Usuário Alterado com Sucesso"
 
     }
     @DeleteMapping("/{id}")
-    fun deleteCustomerById(@PathVariable id: String):String {
+    fun deleteCustomerById(@PathVariable id: Int):String {
         customerServices.deleteCustomerById(id)
         return "Usuário Deletado com Sucesso"
 
