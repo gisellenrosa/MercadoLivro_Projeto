@@ -13,7 +13,7 @@ class BookService(val bookRepository: BookRepository) {
     
     fun findAll(): List<BookModel> {
         return bookRepository.findAll().toList()
-    }
+            }
 
     fun findActives(): List<BookModel> {
         return bookRepository.findByStatus(BookStatus.ATIVO)
@@ -28,7 +28,6 @@ class BookService(val bookRepository: BookRepository) {
         val book = findById(id)
 
         book.status = BookStatus.CANCELADO
-
         update(book)
     }
 
