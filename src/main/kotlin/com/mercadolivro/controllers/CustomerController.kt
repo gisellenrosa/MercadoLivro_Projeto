@@ -13,12 +13,6 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/customer")
 class CustomerController ( val customerServices: CustomerServices) {
 
-// Primeira forma sem PathParams
-//    @GetMapping
-//    fun getCustomer(): MutableList<CustomerModel> {
-//       return customers
-//    }
-
     @GetMapping
     fun getAllCustomers(@RequestParam name: String?): List<CustomerModel> {
       return  customerServices.getAllCustomers(name)
@@ -34,18 +28,18 @@ class CustomerController ( val customerServices: CustomerServices) {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun getCustomerById(@PathVariable id: Int): CustomerModel {
-      return customerServices.getCustomerById(id)
+      return customerServices.findById(id)
     }
 
     @PutMapping("/{id}")
-    fun putCustomerById(@PathVariable id: Int, @RequestBody customer: PutCustomerRequest):String {
-       customerServices.putCustomerById(customer.toCustomerModel(id))
-        return "Usuário Alterado com Sucesso"
-
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun update(@PathVariable id: Int, @RequestBody customer: PutCustomerRequest) {
+        val customerSaved = customerServices.findById(id)
+        customerServices.update(customer.toCustomerModel(customerSaved))
     }
     @DeleteMapping("/{id}")
     fun deleteCustomerById(@PathVariable id: Int):String {
-        customerServices.deleteCustomerById(id)
+        customerServices.delete(id)
         return "Usuário Deletado com Sucesso"
 
     }

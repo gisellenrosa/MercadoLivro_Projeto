@@ -1,6 +1,7 @@
 package com.mercadolivro.controllers
 
 import com.mercadolivro.controllers.requests.PostBookRequest
+import com.mercadolivro.controllers.requests.PutBookRequest
 import com.mercadolivro.extensions.toBookModel
 import com.mercadolivro.model.BookModel
 import com.mercadolivro.services.BookService
@@ -15,10 +16,11 @@ class BookController (
     val customerServices : CustomerServices
 ){
     @PostMapping
-    fun createBook(@RequestBody request : PostBookRequest){
-        val customer =  customerServices.getCustomerById(request.customerId)
+    @ResponseStatus(HttpStatus.CREATED)
+    fun create(@RequestBody request: PostBookRequest) {
+        val customer = customerServices.findById(request.customerId)
         bookService.create(request.toBookModel(customer))
-   }
+    }
 
     @GetMapping
     fun findAll(): List<BookModel> {
@@ -38,5 +40,12 @@ class BookController (
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun delete(@PathVariable id: Int) {
         bookService.delete(id)
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun update(@PathVariable id: Int, @RequestBody book: PutBookRequest) {
+        val bookSaved = bookService.findById(id)
+        bookService.update(book.toBookModel(bookSaved))
     }
 }
