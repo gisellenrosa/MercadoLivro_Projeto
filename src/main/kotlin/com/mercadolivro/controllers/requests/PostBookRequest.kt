@@ -11,6 +11,7 @@ class PostBookRequest (
     @field:NotNull(message ="o valor de preço precisa ser informado")
     var price: BigDecimal,
 
+    @field:NotNull(message ="o customer precisa ser informado")
     @JsonAlias("customer_id")
     var customerId: Int
 )
