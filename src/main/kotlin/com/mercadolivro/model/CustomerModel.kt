@@ -18,5 +18,9 @@ data class CustomerModel(
 
     @Column
     @Enumerated(EnumType.STRING)
-    var status: CustomerStatus
+    var status: CustomerStatus,
+
+    @Column
+    var password: String,
+
     )
